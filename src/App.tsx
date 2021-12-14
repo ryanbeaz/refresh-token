@@ -1,5 +1,5 @@
 import './App.css';
-import { AppBar, Box, Button, IconButton, Toolbar, Typography } from '@mui/material';
+import { AppBar, Box, IconButton, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
 function App() {
@@ -12,8 +12,7 @@ function App() {
             edge="start"
             color="inherit"
             aria-label="menu"
-            sx={{ mr: 2 }}
-          >
+            sx={{ mr: 2 }} >
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
