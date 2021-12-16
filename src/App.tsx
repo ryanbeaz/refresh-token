@@ -3,8 +3,32 @@ import { AppBar, Box, Container, Fab, IconButton, Toolbar, Typography } from '@m
 import MenuIcon from '@mui/icons-material/Menu';
 import { Refresh } from '@mui/icons-material';
 import Stack from '@mui/material/Stack';
+import axios from "axios";
 
 function App() {
+  const code = new URLSearchParams(window.location.search).get('code');
+  let token = "";
+
+  if (code) {
+    const params = new URLSearchParams();
+    params.append('grant_type', 'authorization_code');
+    params.append('code', code);
+    params.append('redirect_uri', process.env.REACT_APP_REDIRECT_URI!);
+    
+    const headers = {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      auth: {
+        username: process.env.REACT_APP_CLIENT_ID!,
+        password: process.env.REACT_APP_CLIENT_SECRET!
+      },
+    };
+
+     axios.post('/identity/v1/oauth2/token', params, headers).then(res => {
+      token = res.data.refresh_token
+    });
+  }
 
   function redirectToLogin() {
     const url = `${process.env.REACT_APP_AUTHORIZE_URL}?client_id=${process.env.REACT_APP_CLIENT_ID}&response_type=code&redirect_uri=${process.env.REACT_APP_REDIRECT_URI}&scope=${process.env.REACT_APP_SCOPES}`;
@@ -62,6 +86,9 @@ function App() {
         </Stack>
       </Container>
       
+    </Box>
+    <Box>
+      <h1>{code}</h1>
     </Box></>
   );
 }
