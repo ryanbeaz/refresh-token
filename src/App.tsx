@@ -1,13 +1,16 @@
 import './App.css';
-import { AppBar, Box, Container, Fab, IconButton, Toolbar, Typography } from '@mui/material';
+import { AppBar, Box, CardContent, Container, Fab, IconButton, Toolbar, Typography, Card } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Refresh } from '@mui/icons-material';
 import Stack from '@mui/material/Stack';
 import axios from "axios";
+import { useState } from 'react';
+import { DateTime } from "luxon";
 
 function App() {
   const code = new URLSearchParams(window.location.search).get('code');
-  let token = "";
+  const [token, setToken] = useState('');
+  const [expires, setExpires] = useState('');
 
   if (code) {
     const params = new URLSearchParams();
@@ -26,7 +29,9 @@ function App() {
     };
 
      axios.post('/identity/v1/oauth2/token', params, headers).then(res => {
-      token = res.data.refresh_token
+      setToken(res.data.refresh_token);
+      const expiresOn = DateTime.now().plus({ seconds: res.data.refresh_token_expires_in }).toFormat('MMMM dd, yyyy');
+      setExpires(expiresOn);
     });
   }
 
@@ -87,9 +92,26 @@ function App() {
       </Container>
       
     </Box>
-    <Box>
-      <h1>{code}</h1>
-    </Box></>
+    {token &&
+    <Container maxWidth="md" sx={{ mt: 10 }}>
+      <Card>
+        <CardContent>
+          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+            Refresh Token
+          </Typography>
+          <Typography variant="body2">
+            {token}
+          </Typography>
+          <Typography sx={{ fontSize: 14, mt: 3 }} color="text.secondary" gutterBottom>
+            Expires
+          </Typography>
+          <Typography variant="body2">
+            {expires}
+          </Typography>
+        </CardContent>
+      </Card>
+    </Container>
+    }</>
   );
 }
 
