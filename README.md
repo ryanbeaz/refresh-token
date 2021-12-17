@@ -4,18 +4,13 @@
 
 In the project directory, you can run:
 
-### `npm start`
+### `npm start` or `npm run start:dev`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Runs the app in development mode against eBay sandbox environment.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### `npm run start:prod`
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Runs the app in production mode against eBay production environment.
 
 ### `npm run build`
 
@@ -27,18 +22,55 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+## Required .env Files
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+In the root project directory (same folder as `package.json`), you'll need to add two `.env` files:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### `.env.development.local` (ebay: sandbox)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```
+HTTPS=true
+REACT_APP_AUTHORIZE_URL=https://auth.sandbox.ebay.com/oauth2/authorize
+REACT_APP_CLIENT_ID=
+REACT_APP_CLIENT_SECRET=
+REACT_APP_REDIRECT_URI=
+REACT_APP_SCOPES=https://api.ebay.com/oauth/api_scope/sell.inventory+https://api.ebay.com/oauth/api_scope/sell.fulfillment
+REACT_APP_PROXY_URL=https://api.sandbox.ebay.com
+```
 
-## Learn More
+### `.env.production.local` (eBay: production)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+HTTPS=true
+REACT_APP_AUTHORIZE_URL=https://auth.ebay.com/oauth2/authorize
+REACT_APP_CLIENT_ID=
+REACT_APP_CLIENT_SECRET=
+REACT_APP_REDIRECT_URI=
+REACT_APP_SCOPES=https://api.ebay.com/oauth/api_scope/sell.inventory+https://api.ebay.com/oauth/api_scope/sell.fulfillment
+REACT_APP_PROXY_URL=https://api.ebay.com
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+The `.env` files tell the code how to interact with eBay. For both `.env` files, please fill in following fields using the [eBay access keys](https://developer.ebay.com/my/keys) page:
+
+- REACT_APP_CLIENT_ID
+- REACT_APP_CLIENT_SECRET
+- REACT_APP_REDIRECT_URI (see [Configuring Redirect URI](#configuring_redirect_uri) below)
+
+<a name="configuring_redirect_uri"></a>
+## Configuring Redirect URI
+
+This application requires a redirect URI be set in order to tell eBay where to redirect during authorization.  To configure, go to [eBay user tokens](https://developer.ebay.com/my/auth?env=sandbox&index=0) page and do the following:
+
+![plot](./redirect_uri_setup.png)
+
+1. Click `Add eBay Redirect URL` button
+2. Fill in `Your auth accepted URL` with `https://localhost:3000`
+3. Click `OAuth` option at the bottom
+4. Copy `RuName (eBay Redirect URL name)` to applicative `.env` files under the variable `REACT_APP_REDIRECT_URI`
+
+This process will need to be completed for both `sandbox` and `production`.
+
+## Miscellaneous
+
+Please contact [@ryanbeaz](https://github.com/ryanbeaz) if you have any questions or run into issues.
