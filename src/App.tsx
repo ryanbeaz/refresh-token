@@ -8,11 +8,11 @@ import { useState } from 'react';
 import { DateTime } from "luxon";
 
 function App() {
-  const code = new URLSearchParams(window.location.search).get('code');
+  const [code] = useState(new URLSearchParams(window.location.search).get('code'));
   const [token, setToken] = useState('');
   const [expires, setExpires] = useState('');
 
-  if (code) {
+  if (code && !token) {
     const params = new URLSearchParams();
     params.append('grant_type', 'authorization_code');
     params.append('code', code);
